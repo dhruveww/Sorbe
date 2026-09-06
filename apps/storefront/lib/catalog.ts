@@ -122,6 +122,28 @@ export async function getProduct(handle: string): Promise<Product | null> {
   return products[0] ?? null;
 }
 
+/** Products by id, for the manually-curated recommendation rails. */
+export async function listProductsByIds(ids: string[]): Promise<Product[]> {
+  if (ids.length === 0) return [];
+
+  const regionId = await getRegionId();
+  const params = new URLSearchParams({
+    region_id: regionId,
+    fields: PRODUCT_FIELDS,
+    limit: String(ids.length),
+  });
+  for (const id of ids) params.append("id", id);
+
+  const { products } = await storeFetch<{ products: Product[] }>(`/store/products?${params}`, {
+    revalidate: 60,
+    tags: ["products"],
+  });
+
+  // Preserve the admin's chosen order, which the API does not guarantee.
+  const byId = new Map(products.map((product) => [product.id, product]));
+  return ids.map((id) => byId.get(id)).filter((product): product is Product => Boolean(product));
+}
+
 export const listCategories = cache(async (): Promise<Category[]> => {
   const { product_categories } = await storeFetch<{ product_categories: Category[] }>(
     "/store/product-categories?limit=50",

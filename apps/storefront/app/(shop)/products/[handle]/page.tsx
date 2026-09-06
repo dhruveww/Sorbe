@@ -2,7 +2,17 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getCatalogMeta, getProduct, listProducts, lowestPricePaise } from "@/lib/catalog";
+import { getFlags } from "@sorbe/config";
+import {
+  getCatalogMeta,
+  getProduct,
+  listProducts,
+  listProductsByIds,
+  lowestPricePaise,
+} from "@/lib/catalog";
+import { getReels, getRecommendations } from "@/lib/content";
+import { ProductGrid } from "@/components/product-grid";
+import { Reels } from "@/components/reels";
 import { JsonLd, breadcrumbSchema, productSchema } from "@/components/json-ld";
 import {
   VariantPicker,
@@ -48,6 +58,19 @@ export default async function ProductPage({ params }: Params) {
 
   const { extras } = await getCatalogMeta([product.id]);
   const extra = extras.get(product.id);
+
+  const flags = getFlags();
+  const [reels, recommendations] = await Promise.all([
+    flags.reels ? getReels(product.id) : Promise.resolve([]),
+    flags.manualRecs
+      ? getRecommendations(product.id)
+      : Promise.resolve({ moreLikeThis: [], completeTheLook: [] }),
+  ]);
+
+  const [moreLikeThis, completeTheLook] = await Promise.all([
+    listProductsByIds(recommendations.moreLikeThis),
+    listProductsByIds(recommendations.completeTheLook),
+  ]);
 
   // Medusa returns variant options as {option_id, value}; the picker wants
   // them keyed by the human option title.
@@ -153,6 +176,24 @@ export default async function ProductPage({ params }: Params) {
           </dl>
         </div>
       </div>
+
+      <Reels reels={reels} />
+
+      {/* Rails are omitted entirely when empty — no ML fallback, and an empty
+          "You may also like" heading looks broken. */}
+      {completeTheLook.length > 0 ? (
+        <section style={{ marginTop: 40 }}>
+          <h2 style={{ fontSize: 20, marginBottom: 16 }}>Complete the look</h2>
+          <ProductGrid products={completeTheLook} />
+        </section>
+      ) : null}
+
+      {moreLikeThis.length > 0 ? (
+        <section style={{ marginTop: 40, paddingBottom: 40 }}>
+          <h2 style={{ fontSize: 20, marginBottom: 16 }}>More like this</h2>
+          <ProductGrid products={moreLikeThis} />
+        </section>
+      ) : null}
     </div>
   );
 }

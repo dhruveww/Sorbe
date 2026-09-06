@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { StaticPage } from "@/components/static-page";
 import { JsonLd, faqSchema } from "@/components/json-ld";
+import { getFaqs } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "FAQ",
@@ -61,13 +62,40 @@ const FAQS = [
   },
 ];
 
-export default function FaqPage() {
-  const flat = FAQS.flatMap((group) => group.items);
+export const dynamic = "force-dynamic";
+
+const GROUP_LABELS: Record<string, string> = {
+  orders: "Orders",
+  shipping: "Shipping",
+  charm_care: "Charm care",
+  events: "Events",
+};
+
+export default async function FaqPage() {
+  // Admin-managed FAQs win; the hardcoded set below is the fallback so this
+  // page is never empty, including before anyone has opened the CMS.
+  const managed = await getFaqs();
+
+  const groups =
+    managed.length > 0
+      ? Object.entries(
+          managed.reduce<Record<string, { question: string; answer: string }[]>>((acc, faq) => {
+            const key = faq.category ?? "orders";
+            (acc[key] ??= []).push({
+              question: faq.question,
+              answer: faq.answer_html.replace(/<[^>]+>/g, ""),
+            });
+            return acc;
+          }, {}),
+        ).map(([key, items]) => ({ group: GROUP_LABELS[key] ?? key, items }))
+      : FAQS;
+
+  const flat = groups.flatMap((group) => group.items);
 
   return (
     <StaticPage title="FAQ" lead="Orders, shipping and looking after your charms.">
       <JsonLd data={faqSchema(flat)} />
-      {FAQS.map((group) => (
+      {groups.map((group) => (
         <section key={group.group} style={{ marginTop: 28 }}>
           <h2 style={{ fontSize: 19 }}>{group.group}</h2>
           {group.items.map((item) => (

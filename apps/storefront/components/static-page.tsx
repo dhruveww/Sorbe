@@ -33,18 +33,25 @@ export function ComingSoon({
   title,
   lead,
   detail,
+  cmsHtml,
 }: {
   title: string;
   lead: string;
   detail: string;
+  /** Admin-managed copy. Falls back to `detail` when nothing is set. */
+  cmsHtml?: string | null;
 }) {
   return (
     <StaticPage title={title} lead={lead}>
       <div className="notice">
         <strong>Coming soon</strong>
-        <p className="muted" style={{ margin: "6px 0 0" }}>
-          {detail}
-        </p>
+        {cmsHtml ? (
+          <div className="muted" style={{ marginTop: 6 }} dangerouslySetInnerHTML={{ __html: cmsHtml }} />
+        ) : (
+          <p className="muted" style={{ margin: "6px 0 0" }}>
+            {detail}
+          </p>
+        )}
       </div>
       <p style={{ marginTop: 24 }}>
         <Link href="/shop" className="btn btn--secondary" style={{ width: "auto" }}>
