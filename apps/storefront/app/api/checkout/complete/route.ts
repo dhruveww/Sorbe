@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getFlags } from "@sorbe/config";
-import { clearCartCookie } from "@/lib/cart";
-import { completeCart, initPayment, listShippingOptions, selectShippingOption } from "@/lib/checkout";
+import { clearCartCookie, getCartId } from "@/lib/cart";
+import { initPayment, listShippingOptions, selectShippingOption } from "@/lib/checkout";
+import { completeCartOnce } from "@/lib/complete-order";
 
 export const dynamic = "force-dynamic";
 
@@ -59,12 +60,20 @@ export async function POST(request: Request) {
     await selectShippingOption(option.id);
 
     await initPayment();
-    const order = await completeCart();
+
+    const cartId = await getCartId();
+    if (!cartId) {
+      return NextResponse.json({ message: "No cart to complete" }, { status: 400 });
+    }
+
+    // Same idempotent chokepoint the Razorpay webhook uses, so COD and mock
+    // orders get the identical double-submit protection.
+    const order = await completeCartOnce(cartId);
 
     // The cart is now an order; drop the cookie so the next visit starts fresh.
     await clearCartCookie();
 
-    return NextResponse.json({ order_id: order.id, display_id: order.display_id });
+    return NextResponse.json({ order_id: order.orderId, display_id: order.displayId });
   } catch (error) {
     console.error("[checkout/complete]", error);
     const detail = error instanceof Error ? error.message : "";

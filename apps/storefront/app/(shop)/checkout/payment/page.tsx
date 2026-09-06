@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getFlags } from "@sorbe/config";
+import { getBrand, getFlags } from "@sorbe/config";
 import { formatPaise } from "@sorbe/types";
 import { getCart } from "@/lib/cart";
 import { listShippingOptions } from "@/lib/checkout";
@@ -58,6 +58,7 @@ export default async function CheckoutPaymentPage() {
           codEnabled={flags.codEnabled}
           codMaxPaise={flags.codMaxOrderPaise}
           totalPaise={totalPaise}
+          brandName={getBrand().name}
         />
       </div>
     </div>

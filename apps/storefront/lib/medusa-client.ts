@@ -18,7 +18,7 @@ export class MedusaError extends Error {
 }
 
 type RequestOptions = {
-  method?: "GET" | "POST" | "DELETE";
+  method?: "GET" | "POST" | "PATCH" | "DELETE";
   body?: unknown;
   /** Forwarded to fetch's Next.js cache options. Default: no caching. */
   cache?: RequestCache;
