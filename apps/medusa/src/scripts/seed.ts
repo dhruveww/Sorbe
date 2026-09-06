@@ -151,8 +151,54 @@ export default async function seedSorbe({ container }: ExecArgs) {
 
   await link.create({
     [Modules.STOCK_LOCATION]: { stock_location_id: stockLocation.id },
-    [Modules.FULFILLMENT]: { fulfillment_provider_id: "manual_manual" },
+    [Modules.FULFILLMENT]: { fulfillment_provider_id: "manual-shipping_manual-shipping" },
   });
+
+  // --- Fulfillment set + calculated shipping option ---------------------------
+  // Medusa refuses to complete a cart without a shipping method, so there has
+  // to be an option here. Its price is CALCULATED by our provider from the
+  // pincode, which is what keeps the charge equal to the quote.
+  const [existingSet] = await fulfillmentModule.listFulfillmentSets({ name: "India delivery" });
+  let fulfillmentSet = existingSet;
+
+  if (!fulfillmentSet) {
+    fulfillmentSet = await fulfillmentModule.createFulfillmentSets({
+      name: "India delivery",
+      type: "shipping",
+      service_zones: [
+        {
+          name: "India",
+          geo_zones: [{ country_code: "in", type: "country" }],
+        },
+      ],
+    });
+    logger.info("  created fulfillment set");
+  }
+
+  await link.create({
+    [Modules.STOCK_LOCATION]: { stock_location_id: stockLocation.id },
+    [Modules.FULFILLMENT]: { fulfillment_set_id: fulfillmentSet.id },
+  });
+
+  const serviceZone = (fulfillmentSet as any).service_zones?.[0];
+  const [existingOption] = await fulfillmentModule.listShippingOptions({
+    name: "Standard delivery",
+  });
+
+  if (!existingOption && serviceZone) {
+    const [profile] = await fulfillmentModule.listShippingProfiles({ type: "default" });
+    await fulfillmentModule.createShippingOptions({
+      name: "Standard delivery",
+      service_zone_id: serviceZone.id,
+      shipping_profile_id: profile!.id,
+      provider_id: "manual-shipping_manual-shipping",
+      // "calculated" is the point: the amount comes from the provider per
+      // request, not from a stored flat price.
+      price_type: "calculated",
+      type: { label: "Standard", description: "Delivered by courier", code: "standard" },
+    });
+    logger.info("  created calculated shipping option");
+  }
 
   // --- Publishable API key ---------------------------------------------------
   // The storefront sends this on every Store API request. It is read by the

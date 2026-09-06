@@ -35,5 +35,18 @@ export default defineConfig({
     {
       resolve: "./src/modules/shipping",
     },
+    {
+      // Fulfillment with our own provider: shipping prices are CALCULATED from
+      // the pincode zone tables, so the charge always matches the quote.
+      resolve: "@medusajs/medusa/fulfillment",
+      options: {
+        providers: [
+          {
+            resolve: "./src/modules/shipping-provider",
+            id: "manual-shipping",
+          },
+        ],
+      },
+    },
   ],
 });

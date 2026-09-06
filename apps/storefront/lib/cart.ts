@@ -42,6 +42,12 @@ export type Cart = {
   email: string | null;
   customer_id: string | null;
   completed_at: string | null;
+  shipping_address?: {
+    address_1: string;
+    city: string;
+    province: string;
+    postal_code: string;
+  } | null;
 };
 
 const CART_FIELDS = [
@@ -58,6 +64,7 @@ const CART_FIELDS = [
   "*items",
   "*items.variant",
   "*items.variant.product",
+  "*shipping_address",
 ].join(",");
 
 export async function getCartId(): Promise<string | null> {
