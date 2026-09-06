@@ -28,4 +28,9 @@ export default defineConfig({
     // injected into this same app via src/admin — one dashboard, not two.
     disable: process.env.DISABLE_MEDUSA_ADMIN === "true",
   },
+  modules: [
+    {
+      resolve: "./src/modules/catalog",
+    },
+  ],
 });

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { getBrand } from "@sorbe/config";
+import { JsonLd, organizationSchema } from "@/components/json-ld";
 import "./globals.css";
 
 // Server-side only, so reading env here is safe and the brand name stays in
@@ -26,7 +27,11 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-IN">
-      <body>{children}</body>
+      <body>
+        {/* Site-wide identity for search engines — declared once, not per page. */}
+        <JsonLd data={organizationSchema()} />
+        {children}
+      </body>
     </html>
   );
 }

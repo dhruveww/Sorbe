@@ -20,5 +20,15 @@
   "devDependencies": {
     "turbo": "^2.3.3",
     "typescript": "^5.7.2"
+  },
+  "pnpm": {
+    "comment": "All @mikro-orm/* packages MUST resolve to one version — a mixed tree fails in confusing ways (invalid `id NOT IN ()` SQL on cart creation, or `getEventManager().getSubscribers is not a function`). @mikro-orm/cli needs pinning too: @mikro-orm/migrations pulls it, and it drags its own core along. 6.6.14 is the floor for Medusa 2.20.1, which calls EventManager#getSubscribers — added after 6.4.x.",
+    "overrides": {
+      "@mikro-orm/core": "6.6.14",
+      "@mikro-orm/knex": "6.6.14",
+      "@mikro-orm/migrations": "6.6.14",
+      "@mikro-orm/postgresql": "6.6.14",
+      "@mikro-orm/cli": "6.6.14"
+    }
   }
 }

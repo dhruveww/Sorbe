@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600" role="img" aria-label="Pearl charm placeholder">
+  <rect width="600" height="600" fill="#e8d5c4"/>
+  <circle cx="300" cy="215" r="58" fill="none" stroke="#c9a227" stroke-width="14"/>
+  <path d="M300 273 L300 330" stroke="#c9a227" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="300" cy="392" r="62" fill="#c9a227" opacity="0.85"/>
+  <circle cx="300" cy="392" r="26" fill="#e8d5c4" opacity="0.6"/>
+  <text x="300" y="522" font-family="system-ui,sans-serif" font-size="34" fill="#c9a227" text-anchor="middle">Pearl</text>
+</svg>

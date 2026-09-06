@@ -77,9 +77,12 @@ export default async function seedSorbe({ container }: ExecArgs) {
             name: "India",
             currency_code: "inr",
             countries: ["in"],
-            // Prices are entered GST-INCLUSIVE: the customer sees one number and
-            // pays exactly that. The invoice works backwards to the tax split.
-            automatic_taxes: true,
+            // OFF deliberately. Prices are stored GST-INCLUSIVE — the customer
+            // sees one number and pays exactly that — and the invoice derives
+            // the tax split backwards with splitGstInclusive(). Turning this on
+            // makes Medusa look for a tax provider we do not have, and cart
+            // line-item adds fail with "Could not resolve 'null'".
+            automatic_taxes: false,
             payment_providers: ["pp_system_default"],
           },
         ],
@@ -87,6 +90,10 @@ export default async function seedSorbe({ container }: ExecArgs) {
     });
     region = result[0]!;
     logger.info("  created India region");
+  } else if (region.automatic_taxes) {
+    // Correct a region seeded before automatic_taxes was turned off.
+    await regionModule.updateRegions(region.id, { automatic_taxes: false });
+    logger.info("  disabled automatic taxes on India region");
   }
 
   // --- Tax region ------------------------------------------------------------

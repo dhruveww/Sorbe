@@ -4,6 +4,13 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@mikro-orm/core': 6.6.14
+  '@mikro-orm/knex': 6.6.14
+  '@mikro-orm/migrations': 6.6.14
+  '@mikro-orm/postgresql': 6.6.14
+  '@mikro-orm/cli': 6.6.14
+
 importers:
 
   .:
@@ -1688,7 +1695,7 @@ packages:
     resolution: {integrity: sha512-xQWq9+7TwE8LLul1RkhjB7/0/iCHMlkSmEToVpz+NNFoPj6M32DfY9mhNnM6qPZ/HF50WjpcVgCgi9ADrEBSFA==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
-      '@mikro-orm/core': ^6.0.0
+      '@mikro-orm/core': 6.6.14
       better-sqlite3: '*'
       libsql: '*'
       mariadb: '*'
@@ -1704,13 +1711,13 @@ packages:
     resolution: {integrity: sha512-rigk6pVUF8499yuR3kJOa9B0hzkacLYeWYmNuH5005ECQNcbT2d4qqTvWjE96/PqxxnMesKg4RmesSIC7sIXvg==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
-      '@mikro-orm/core': ^6.0.0
+      '@mikro-orm/core': 6.6.14
 
   '@mikro-orm/postgresql@6.6.14':
     resolution: {integrity: sha512-hgyxpuTaXK0nYhhkmPkz8lx1nzhsqtOQuqQ+oabtyEKuqzPeANRJaV2TczIFYMIczyxKWOylV7g//13qrwqmNQ==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
-      '@mikro-orm/core': ^6.0.0
+      '@mikro-orm/core': 6.6.14
 
   '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.4':
     resolution: {integrity: sha512-LCkGo6JDfaBhgST7UpPWgNgLINpcpabaHfyz5OBx75nUYxBsaEPxjnyNjWpeb/xBup/682QnBfRBy2/LvPutZQ==}
