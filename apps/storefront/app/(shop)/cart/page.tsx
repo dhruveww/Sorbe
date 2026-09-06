@@ -3,6 +3,7 @@ import Link from "next/link";
 import { formatPaise } from "@sorbe/types";
 import { getCart } from "@/lib/cart";
 import { CartLines, type CartLine } from "@/components/cart-lines";
+import { PincodeCheck } from "@/components/pincode-check";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +48,10 @@ export default async function CartPage() {
 
       <div style={{ marginTop: 20 }}>
         <CartLines lines={lines} />
+      </div>
+
+      <div style={{ marginTop: 24 }}>
+        <PincodeCheck />
       </div>
 
       <dl style={{ marginTop: 24 }}>

@@ -11,6 +11,7 @@
     "db:setup": "medusa db:migrate && medusa exec ./src/scripts/seed.ts",
     "seed": "medusa exec ./src/scripts/seed.ts",
     "seed:catalog": "medusa exec ./src/scripts/seed-catalog.ts",
+    "seed:shipping": "medusa exec ./src/scripts/seed-shipping.ts",
     "user": "medusa user",
     "typecheck": "tsc --noEmit",
     "test": "echo \"no medusa tests yet\" && exit 0"
