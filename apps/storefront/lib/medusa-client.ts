@@ -26,6 +26,8 @@ type RequestOptions = {
   tags?: string[];
   /** A logged-in customer's Medusa token, when acting on their behalf. */
   customerToken?: string;
+  /** Extra headers, e.g. the internal shared secret. Server-side only. */
+  headers?: Record<string, string>;
 };
 
 /**
@@ -48,7 +50,7 @@ export async function storeFetch<T>(path: string, options: RequestOptions = {}):
     headers.authorization = `Bearer ${options.customerToken}`;
   }
 
-  return request<T>(path, headers, options);
+  return request<T>(path, { ...headers, ...options.headers }, options);
 }
 
 /**

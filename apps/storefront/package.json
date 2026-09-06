@@ -14,6 +14,7 @@
     "@sorbe/config": "workspace:*",
     "@sorbe/types": "workspace:*",
     "@sorbe/validation": "workspace:*",
+    "ioredis": "^6.0.0",
     "next": "^15.1.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
