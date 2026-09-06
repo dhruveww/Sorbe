@@ -1,0 +1,24 @@
+{
+  "name": "sorbe",
+  "private": true,
+  "version": "0.1.0",
+  "description": "SORBE — India bag-charm storefront (Next.js + Medusa v2)",
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=20 <25"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "db:up": "docker compose -f infra/docker-compose.yml up -d",
+    "db:down": "docker compose -f infra/docker-compose.yml down",
+    "db:reset": "docker compose -f infra/docker-compose.yml down -v && docker compose -f infra/docker-compose.yml up -d"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2"
+  }
+}

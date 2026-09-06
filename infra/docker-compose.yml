@@ -1,0 +1,49 @@
+# Local development stack — Postgres + Redis, free, offline.
+#
+# In production these are replaced by Supabase (ap-south-1) and Upstash, but the
+# wire protocol is identical, so nothing in the app knows the difference.
+#
+#   pnpm db:up      start
+#   pnpm db:down    stop (data survives)
+#   pnpm db:reset   stop and WIPE all data
+
+name: sorbe
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sorbe-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sorbe
+      POSTGRES_PASSWORD: sorbe
+      POSTGRES_DB: sorbe
+    ports:
+      # 5432 is often taken by another local Postgres; change the host side if so.
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      # Medusa's migrations fail confusingly if they start before Postgres is ready.
+      test: ["CMD-SHELL", "pg_isready -U sorbe -d sorbe"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: sorbe-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres-data:
+  redis-data:
